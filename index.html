@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rubbercat | Travel Planner & Dashboard</title>
+    
+    <!-- Leaflet CSS for the Map -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    
+    <!-- Your Custom CSS -->
+    <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+
+    <!-- DASHBOARD VIEW -->
+    <div id="dashboard-view" class="app-view active">
+        <div class="dashboard-container">
+            <div class="dashboard-header">
+                <h1>🌍 My Trips</h1>
+                <div class="dashboard-controls">
+                    <select id="sort-select" onchange="renderDashboard()">
+                        <option value="created-desc">Sort: Newest Created</option>
+                        <option value="created-asc">Sort: Oldest Created</option>
+                        <option value="date-asc">Sort: Trip Date (Soonest)</option>
+                        <option value="date-desc">Sort: Trip Date (Furthest)</option>
+                    </select>
+                    <button onclick="openModal()">+ Create New Trip</button>
+                </div>
+            </div>
+            <div id="trip-grid" class="trip-grid"></div>
+            <div id="empty-state" style="display: none; text-align: center; color: #7f8c8d; margin-top: 50px;">
+                <h2>You haven't created any trips yet!</h2>
+                <p>Click "+ Create New Trip" to get started.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Universal Trip Modal -->
+    <div id="trip-modal" class="modal-overlay">
+        <div class="modal-content">
+            <h2 id="modal-title">Plan a New Trip</h2>
+            <input type="text" id="trip-name" placeholder="Trip Name (e.g., Japan 2026)" style="margin-bottom: 10px;">
+            <label style="font-size: 0.8rem; font-weight: bold; color: #34495e;">Start Date</label>
+            <input type="date" id="trip-start" style="margin-bottom: 10px;">
+            <label style="font-size: 0.8rem; font-weight: bold; color: #34495e;">End Date</label>
+            <input type="date" id="trip-end">
+            <div style="display: flex; gap: 10px; margin-top: 15px;">
+                <button onclick="saveTrip()">Save Trip</button>
+                <button onclick="closeModal()" style="background-color: #95a5a6;">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- PLANNER VIEW -->
+    <div id="planner-view" class="app-view">
+        <div id="sidebar">
+            <button class="back-btn" onclick="openDashboard()">← Back to Dashboard</button>
+            
+            <div class="control-group">
+                <h2 id="display-trip-name" style="margin-top:0;">Trip Name</h2>
+                <select id="day-selector" onchange="changeDay()" style="margin-bottom: 10px;"></select>
+
+                <div class="input-group">
+                    <input type="text" id="sidebar-input" placeholder="Type to search location...">
+                    <button class="add-btn" onclick="quickAddLocation()">Add</button>
+                    <ul id="sidebar-autocomplete" class="autocomplete-list"></ul>
+                </div>
+                
+                <div class="hint-text">💡 Search the map or click anywhere on it to add places.</div>
+                <div id="error-msg">Location not found.</div>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <h3 style="margin: 0;">Itinerary:</h3>
+                <div style="font-size: 0.85rem; color: #34495e;">
+                    <b>Day Start:</b> <input type="time" id="day-start-input" onchange="updateDayStartTime(this.value)" style="width: auto; padding: 2px 4px; margin: 0; border: 1px solid #ccc; border-radius: 4px;">
+                </div>
+            </div>
+            
+            <ul id="itinerary" style="flex-grow: 1; overflow-y: auto; padding-right: 5px;"></ul>
+        </div>
+
+        <div id="map-container">
+            <div id="map-search-box">
+                <input type="text" id="map-search-input" placeholder="Explore the map...">
+                <button onclick="searchMapOnly()">Search</button>
+                <ul id="map-autocomplete" class="autocomplete-list" style="top: 100%;"></ul>
+            </div>
+            <div id="map"></div>
+        </div>
+    </div>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    
+    <!-- Your Custom JavaScript -->
+    <script src="./script.js"></script>
+</body>
+</html>
